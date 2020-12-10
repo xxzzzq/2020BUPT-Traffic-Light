@@ -1,0 +1,659 @@
+module hld(output reg[7:0]row,col_r,col_g,seg,cat,input clk_1kHz);
+		reg [3:0] i;
+		wire clk_1Hz;
+		reg [7:0]jishi2;  //计时
+		always@(posedge clk_1kHz)
+		if(i==7) i<=0;
+		else i<=i+1;
+		divide #  //例化分频器产生1秒时钟信号
+					(
+					.WIDTH(12),
+					.N(1000)
+					) u2
+					(
+					.clk(clk_1kHz),
+					.clkout(clk_1Hz)
+					);
+		always @(posedge clk_1Hz )
+		begin
+			 if(jishi2[3:0] == 4'd9) 
+					begin
+						jishi2[3:0] <= 4'd0;//个位满九时置零
+						if(jishi2[7:4] == 4'd3)
+							begin
+							jishi2[7:4] <= 4'd0;//十位满3时清零
+							end
+						else jishi2[7:4] <= jishi2[7:4] + 1'b1; //十位加一
+					end
+			 else jishi2[3:0] <= jishi2[3:0] + 1'b1; //个位加一
+		end	
+		always@(i)
+		begin
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==0)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b01101101;cat<=8'b10111111;end//5
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b01011011;cat<=8'b11111101;end//2
+					7:begin seg<=8'b00111111;cat<=8'b11111110;end//0
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==1)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b01100110;cat<=8'b10111111;end//4
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b01101111;cat<=8'b11111110;end//9
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==2)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b01001111;cat<=8'b10111111;end//3
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b01111111;cat<=8'b11111110;end//8
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==3)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b01011011;cat<=8'b10111111;end//2
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b00000111;cat<=8'b11111110;end//7
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==4)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b00000110;cat<=8'b10111111;end//1
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b11111101;cat<=8'b11111110;end//6
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==5)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b00111111;cat<=8'b10111111;end//0
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b01101101;cat<=8'b11111110;end//5
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==6)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01101111;cat<=8'b10111111;end//9
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b01100110;cat<=8'b11111110;end//4
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==7)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01111111;cat<=8'b10111111;end//8
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b01001111;cat<=8'b11111110;end//3
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==8)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b00000111;cat<=8'b10111111;end//7
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b01011011;cat<=8'b11111110;end//2
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==9)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b11111101;cat<=8'b10111111;end//6
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b00000110;cat<=8'b11111110;end//1
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==10)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01101101;cat<=8'b10111111;end//5
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b00111111;cat<=8'b11111110;end//0
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==11)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01100110;cat<=8'b10111111;end//4
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01101111;cat<=8'b11111110;end//9
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==12)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01001111;cat<=8'b10111111;end//3
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01111111;cat<=8'b11111110;end//8
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==13)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01011011;cat<=8'b10111111;end//2
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b00000111;cat<=8'b11111110;end//7
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==14)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b00000110;cat<=8'b10111111;end//1
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b11111101;cat<=8'b11111110;end//6
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==15)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01101101;cat<=8'b10111111;end//5
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01101101;cat<=8'b11111110;end//5
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==16)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01100110;cat<=8'b10111111;end//4
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01100110;cat<=8'b11111110;end//4
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==17)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01001111;cat<=8'b10111111;end//3
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01001111;cat<=8'b11111110;end//3
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==18)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01011011;cat<=8'b10111111;end//2
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01011011;cat<=8'b11111110;end//2
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==19)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b00000110;cat<=8'b10111111;end//1
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b00000110;cat<=8'b11111110;end//1
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==20)
+			begin
+				case(i)
+					0:begin seg<=8'b01011011;cat<=8'b01111111;end//2
+					1:begin seg<=8'b00111111;cat<=8'b10111111;end//0
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b01101101;cat<=8'b11111110;end//5
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==21)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b01101111;cat<=8'b10111111;end//9
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b01100110;cat<=8'b11111110;end//4
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==22)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b01111111;cat<=8'b10111111;end//8
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b01001111;cat<=8'b11111110;end//3
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==23)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b00000111;cat<=8'b10111111;end//7
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b01011011;cat<=8'b11111110;end//2
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==24)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b01111101;cat<=8'b10111111;end//6
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b00000110;cat<=8'b11111110;end//1
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==25)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b01101101;cat<=8'b10111111;end//5
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00000110;cat<=8'b11111101;end//1
+					7:begin seg<=8'b00111111;cat<=8'b11111110;end//0
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==26)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b01100110;cat<=8'b10111111;end//4
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01101111;cat<=8'b11111110;end//9
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==27)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b01001111;cat<=8'b10111111;end//3
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01111111;cat<=8'b11111110;end//8
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==28)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b01011011;cat<=8'b10111111;end//2
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b00000111;cat<=8'b11111110;end//7
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==29)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b00000110;cat<=8'b10111111;end//1
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01111101;cat<=8'b11111110;end//6
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==30)
+			begin
+				case(i)
+					0:begin seg<=8'b00000110;cat<=8'b01111111;end//1
+					1:begin seg<=8'b00111111;cat<=8'b10111111;end//0
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01101101;cat<=8'b11111110;end//5
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==31)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01101111;cat<=8'b10111111;end//9
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01100110;cat<=8'b11111110;end//4
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==32)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01111111;cat<=8'b10111111;end//8
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01001111;cat<=8'b11111110;end//3
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==33)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b00000111;cat<=8'b10111111;end//7
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01011011;cat<=8'b11111110;end//2
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==34)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01111101;cat<=8'b10111111;end//6
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b00000110;cat<=8'b11111110;end//1
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==35)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01101101;cat<=8'b10111111;end//5
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01101101;cat<=8'b11111110;end//5
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==36)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01100110;cat<=8'b10111111;end//4
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01100110;cat<=8'b11111110;end//4
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==37)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01001111;cat<=8'b10111111;end//3
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01001111;cat<=8'b11111110;end//3
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==38)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b01011011;cat<=8'b10111111;end//2
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b01011011;cat<=8'b11111110;end//2
+				endcase
+			end
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))==39)
+			begin
+				case(i)
+					0:begin seg<=8'b00111111;cat<=8'b01111111;end//0
+					1:begin seg<=8'b00000110;cat<=8'b10111111;end//1
+					2:begin seg<=8'b00000000;cat<=8'b11011111;end
+					3:begin seg<=8'b00000000;cat<=8'b11101111;end
+					4:begin seg<=8'b00000000;cat<=8'b11110111;end
+					5:begin seg<=8'b00000000;cat<=8'b11111011;end
+					6:begin seg<=8'b00111111;cat<=8'b11111101;end//0
+					7:begin seg<=8'b00000110;cat<=8'b11111110;end//1
+				endcase
+			end
+		end
+		always@(i)
+		begin
+			if((jishi2[3:0]+(jishi2[7:4]*4'd10))<15)
+			begin
+				case(i)
+				7: begin row<=8'b01111111;col_r<=8'b00000000;col_g<=8'b01100000;end
+				6: begin row<=8'b10111111;col_r<=8'b00000011;col_g<=8'b01100000;end
+				5: begin row<=8'b11011111;col_r<=8'b00000011;col_g<=8'b00000000;end
+				4: begin row<=8'b11101111;col_r<=8'b00000000;col_g<=8'b00000000;end
+				3: begin row<=8'b11110111;col_r<=8'b00000000;col_g<=8'b00000000;end
+				2: begin row<=8'b11111011;col_r<=8'b11000000;col_g<=8'b00000000;end
+				1: begin row<=8'b11111101;col_r<=8'b11000000;col_g<=8'b00000110;end
+				0: begin row<=8'b11111110;col_r<=8'b00000000;col_g<=8'b00000110;end
+				endcase
+			end
+		 if(((jishi2[3:0]+(jishi2[7:4]*4'd10))>=15)&&((jishi2[3:0]+(jishi2[7:4]*4'd10))<20))
+			begin
+				case(i)
+				7: begin row<=8'b01111111;col_r<=8'b01100000;col_g<=8'b01100000;end
+				6: begin row<=8'b10111111;col_r<=8'b01100011;col_g<=8'b01100000;end
+				5: begin row<=8'b11011111;col_r<=8'b00000011;col_g<=8'b00000000;end
+				4: begin row<=8'b11101111;col_r<=8'b00000000;col_g<=8'b00000000;end
+				3: begin row<=8'b11110111;col_r<=8'b00000000;col_g<=8'b00000000;end
+				2: begin row<=8'b11111011;col_r<=8'b11000000;col_g<=8'b00000000;end
+				1: begin row<=8'b11111101;col_r<=8'b11000110;col_g<=8'b00000110;end
+				0: begin row<=8'b11111110;col_r<=8'b00000110;col_g<=8'b00000110;end
+				endcase
+			end
+		 if(((jishi2[3:0]+(jishi2[7:4]*4'd10))>=20)&&((jishi2[3:0]+(jishi2[7:4]*4'd10))<35))
+			begin
+				case(i)
+				7: begin row<=8'b01111111;col_r<=8'b01100000;col_g<=8'b00000000;end
+				6: begin row<=8'b10111111;col_r<=8'b01100000;col_g<=8'b00000011;end
+				5: begin row<=8'b11011111;col_r<=8'b00000000;col_g<=8'b00000011;end
+				4: begin row<=8'b11101111;col_r<=8'b00000000;col_g<=8'b00000000;end
+				3: begin row<=8'b11110111;col_r<=8'b00000000;col_g<=8'b00000000;end
+				2: begin row<=8'b11111011;col_r<=8'b00000000;col_g<=8'b11000000;end
+				1: begin row<=8'b11111101;col_r<=8'b00000110;col_g<=8'b11000000;end
+				0: begin row<=8'b11111110;col_r<=8'b00000110;col_g<=8'b00000000;end
+				endcase
+			end
+		 if((jishi2[3:0]+(jishi2[7:4]*4'd10))>=35)
+			begin
+				case(i)
+				7: begin row<=8'b01111111;col_r<=8'b01100000;col_g<=8'b01100000;end
+				6: begin row<=8'b10111111;col_r<=8'b01100011;col_g<=8'b01100000;end
+				5: begin row<=8'b11011111;col_r<=8'b00000011;col_g<=8'b00000000;end
+				4: begin row<=8'b11101111;col_r<=8'b00000000;col_g<=8'b00000000;end
+				3: begin row<=8'b11110111;col_r<=8'b00000000;col_g<=8'b00000000;end
+				2: begin row<=8'b11111011;col_r<=8'b11000000;col_g<=8'b00000000;end
+				1: begin row<=8'b11111101;col_r<=8'b11000110;col_g<=8'b00000110;end
+				0: begin row<=8'b11111110;col_r<=8'b00000110;col_g<=8'b00000110;end
+				endcase
+			end
+		end
+
+endmodule
+
+
+module divide #
+	(                            
+	parameter WIDTH    =    12,    //计数器的位数，计数的最大值为 2**(WIDTH-1)
+	parameter N        =    1000 //分频系数，请确保 N<2**(WIDTH-1)，否则计数会溢出
+	)
+	(
+	input clk, //clk频率为1000Hz
+	output clkout //输出信号，可以连接到LED观察分频的时钟
+	);
+	reg    [WIDTH-1:0]    cnt_p,cnt_n; //cnt_p为上升沿触发时的计数器，cnt_n为下降沿触发时的计数器
+	reg    clk_p,clk_n; //clk_p为上升沿触发时分频时钟，clk_n为下降沿触发时分频时钟
+	//上升沿触发时计数器的控制
+	always @(posedge clk )    
+		 begin        
+			  if(cnt_p == (N-1))
+					cnt_p <= 1'b0;
+			  else 
+					cnt_p <= cnt_p + 1'b1; //计数器一直计数，当计数到N-1的时候清零，这是一个模N的计数器
+		 end
+	//上升沿触发的分频时钟输出,如果N为奇数得到的时钟占空比不是50%；如果N为偶数得到的时钟占空比为50%
+	always @(posedge clk)
+		 begin
+			  if(cnt_p < (N>>1)) //N>>1表示右移一位，相当于除以2取商
+					clk_p <= 1'b0;
+			  else 
+					clk_p <= 1'b1; //得到的分频时钟正周期比负周期多一个clk时钟
+		 end
+	//下降沿触发时计数器的控制            
+	always @(negedge clk)
+		 begin
+			  if(cnt_n == (N-1))
+					cnt_n <= 1'b0;
+			  else 
+					cnt_n <= cnt_n + 1'b1;
+		 end
+	//下降沿触发的分频时钟输出，和clk_p相差半个clk时钟
+	always @(negedge clk)
+		 begin
+			  if(cnt_n < (N>>1))  
+					clk_n <= 1'b0;
+			  else 
+					clk_n <= 1'b1;    //得到的分频时钟正周期比负周期多一个clk时钟
+		 end
+	wire    clk1 = clk; //当N=1时，直接输出clk
+	wire    clk2 = clk_p; //当N为偶数也就是N的最低位为0，N[0]=0，输出clk_p
+	wire    clk3 = clk_p & clk_n; //当N为奇数也就是N最低位为1，N[0]=1，输出clk_p&clk_n。正周期多所以是相与
+	assign clkout = (N==1)? clk1:(N[0]? clk3:clk2);    //条件判断表达式
+endmodule
